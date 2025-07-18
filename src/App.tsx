@@ -1,11 +1,39 @@
 import { useState, useEffect } from 'react';
 import { Github, Mail, Phone, MapPin, Code, Database, Shield, Settings, Monitor, GitBranch, ChevronRight } from 'lucide-react';
 
+// Task data for each category
+const taskData = {
+  Docker: [
+    'Install Docker',
+    'Run a container',
+    'Build a Docker image',
+    'Push image to Docker Hub',
+  ],
+  Python: [
+    'Install Python',
+    'Create a virtual environment',
+    'Install packages with pip',
+    'Run a Python script',
+  ],
+  JavaScript: [
+    'Setup Node.js',
+    'Initialize npm project',
+    'Install dependencies',
+    'Run a JS file',
+  ],
+  Linux: [
+    'List files with ls',
+    'Check disk usage',
+    'Edit files with nano',
+    'Manage processes',
+  ],
+};
+
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
-  const [expandedTask, setExpandedTask] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<'Docker' | 'Python' | 'JavaScript' | 'Linux'>('Docker');
 
   const skills = [
     { name: 'JavaScript', icon: Code, level: 90 },
@@ -58,74 +86,6 @@ function App() {
       demo: 'https://ayushi-tasks-demo.com',
       image: 'https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=400',
       featured: false
-    }
-  ];
-
-  const tasks = [
-    {
-      title: 'Microservices Architecture',
-      description: 'Designing and implementing scalable microservices with containerization',
-      status: 'completed',
-      progress: 100,
-      deadline: '2024-01-15',
-      subTasks: [
-        { name: 'Service decomposition planning', completed: true },
-        { name: 'API gateway implementation', completed: true },
-        { name: 'Service mesh configuration', completed: true },
-        { name: 'Load balancing setup', completed: true }
-      ]
-    },
-    {
-      title: 'CI/CD Pipeline Optimization',
-      description: 'Streamlining deployment processes with automated testing and deployment',
-      status: 'in-progress',
-      progress: 65,
-      deadline: '2024-02-20',
-      subTasks: [
-        { name: 'Jenkins pipeline configuration', completed: true },
-        { name: 'Automated testing integration', completed: true },
-        { name: 'Docker image optimization', completed: false },
-        { name: 'Production deployment automation', completed: false }
-      ]
-    },
-    {
-      title: 'Cloud Infrastructure Setup',
-      description: 'Building robust cloud infrastructure with AWS services and monitoring',
-      status: 'completed',
-      progress: 100,
-      deadline: '2024-01-10',
-      subTasks: [
-        { name: 'VPC and networking setup', completed: true },
-        { name: 'EKS cluster configuration', completed: true },
-        { name: 'RDS database setup', completed: true },
-        { name: 'CloudWatch monitoring', completed: true }
-      ]
-    },
-    {
-      title: 'Security Implementation',
-      description: 'Implementing security best practices and compliance measures',
-      status: 'planned',
-      progress: 25,
-      deadline: '2024-03-15',
-      subTasks: [
-        { name: 'Security audit planning', completed: true },
-        { name: 'SSL/TLS configuration', completed: false },
-        { name: 'Access control implementation', completed: false },
-        { name: 'Vulnerability scanning setup', completed: false }
-      ]
-    },
-    {
-      title: 'Performance Monitoring',
-      description: 'Setting up comprehensive monitoring and alerting systems',
-      status: 'in-progress',
-      progress: 40,
-      deadline: '2024-02-28',
-      subTasks: [
-        { name: 'Prometheus setup', completed: true },
-        { name: 'Grafana dashboard creation', completed: false },
-        { name: 'Alert manager configuration', completed: false },
-        { name: 'Log aggregation setup', completed: false }
-      ]
     }
   ];
 
@@ -183,10 +143,6 @@ function App() {
   const downloadResume = () => {
     // In a real application, this would download an actual resume file
     alert('Resume download would start here!');
-  };
-
-  const toggleTaskExpansion = (index: number) => {
-    setExpandedTask(expandedTask === index ? null : index);
   };
 
   return (
@@ -399,107 +355,32 @@ function App() {
         </div>
       </section>
 
-      {/* Tasks Section */}
+      {/* Task Section */}
       <section id="tasks" className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-5xl font-bold text-center bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent mb-16">
-            Current Tasks & Progress
+            Tasks
           </h2>
-          <div className="flex flex-wrap gap-8 justify-center relative">
-            {tasks.map((task, index) => (
-              <div key={index} className="relative">
-                <div 
-                  className="flex-1 min-w-80 max-w-md bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-blue-100 group cursor-pointer"
-                  onClick={() => toggleTaskExpansion(index)}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center">
-                      <div className={`w-4 h-4 rounded-full mr-3 ${
-                        task.status === 'completed' ? 'bg-green-500' : 
-                        task.status === 'in-progress' ? 'bg-yellow-500' : 'bg-gray-400'
-                      }`}></div>
-                      <h3 className="text-xl font-bold text-gray-800">{task.title}</h3>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-gray-500">{task.progress}%</span>
-                      <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
-                        expandedTask === index ? 'rotate-90' : ''
-                      }`} />
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-600 mb-4 leading-relaxed">{task.description}</p>
-                  
-                  <div className="mb-4">
-                    <div className="flex justify-between text-sm text-gray-600 mb-1">
-                      <span>Progress</span>
-                      <span>{task.progress}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full transition-all duration-500 ${
-                          task.status === 'completed' ? 'bg-green-500' : 
-                          task.status === 'in-progress' ? 'bg-blue-500' : 'bg-gray-400'
-                        }`}
-                        style={{ width: `${task.progress}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between items-center mb-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      task.status === 'completed' ? 'bg-green-100 text-green-700' : 
-                      task.status === 'in-progress' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
-                    }`}>
-                      {task.status.replace('-', ' ')}
-                    </span>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <ChevronRight className="w-4 h-4 mr-1" />
-                      {task.deadline}
-                    </div>
-                  </div>
-
-                  {/* Sub-tasks */}
-                  {expandedTask === index && (
-                    <div className="mt-4 pt-4 border-t border-gray-200 animate-in slide-in-from-top duration-300">
-                      <h4 className="text-sm font-semibold text-gray-700 mb-3">Sub-tasks:</h4>
-                      <div className="space-y-2">
-                        {task.subTasks.map((subTask, subIndex) => (
-                          <div key={subIndex} className="flex items-center space-x-3">
-                            <div className={`w-3 h-3 rounded-full ${
-                              subTask.completed ? 'bg-green-500' : 'bg-gray-300'
-                            }`}></div>
-                            <span className={`text-sm ${
-                              subTask.completed ? 'text-gray-700 line-through' : 'text-gray-600'
-                            }`}>
-                              {subTask.name}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Connecting Lines */}
-                {index < tasks.length - 1 && (
-                  <div className="hidden xl:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-blue-300 to-blue-400 transform -translate-y-1/2"></div>
-                )}
-              </div>
+          <div className="flex justify-center gap-4 mb-8">
+            {(['Docker', 'Python', 'JavaScript', 'Linux'] as const).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-6 py-2 rounded-full font-semibold transition-all ${
+                  selectedCategory === cat
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                }`}
+              >
+                {cat}
+              </button>
             ))}
           </div>
-          
-          <div className="text-center mt-16">
-            <a 
-              href="https://github.com/ayushi" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              <Github className="w-6 h-6 mr-3" />
-              View All Projects on GitHub
-            </a>
-          </div>
+          <ul className="max-w-md mx-auto text-lg text-gray-700 list-disc list-inside">
+            {taskData[selectedCategory].map((task, idx) => (
+              <li key={idx} className="mb-2">{task}</li>
+            ))}
+          </ul>
         </div>
       </section>
 
